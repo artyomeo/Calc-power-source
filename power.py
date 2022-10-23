@@ -5,9 +5,8 @@ import numpy as np
 import pandas as pd
 from scipy import integrate as integrate
 from datetime import datetime as time
-import re
 
-def search_file ():
+def search_file () -> str:
     file_csv = ''
 
     for file in sorted(os.listdir(os.getcwd())):
@@ -37,7 +36,9 @@ def search_file ():
     else:
         return file_csv
 
-def min_amount(name_file=''):
+def min_amount(name_file:str='') -> int:
+    """Функция поиска меньшего количества между данными токов и напряжений (на случай присуствия "лишнего" набора данных)."""
+
     point = open(name_file, 'r')
     line = point.readline()
     point.close()
@@ -64,7 +65,7 @@ def find_VI (data=pd.DataFrame(), num=1):
     
     return [save_v, save_i]
 
-def calculation (data=pd.DataFrame(), num=1):
+def calculation (data=pd.DataFrame(), num:int=1):
 
     position_VI = find_VI(data, num)
 
@@ -80,12 +81,14 @@ def calculation (data=pd.DataFrame(), num=1):
 
     return {'Vrms': Vrms, 'Irms': Irms, 'Prms': Prms, 'Srms' : Srms, 'Xrms' : Xrms}
 
-def mean_signal (data=pd.DataFrame()):
-    var_x = data[data.columns[0]]
-    var_yv = data[data.columns[1]]
-    dt = var_x[var_x.size-1]-var_x[0]
+def mean_signal (data=pd.DataFrame()) -> float:
+    """Функция расчета среднего значения функции на заданном интервале времени"""
+
+    x_t = data[data.columns[0]]
+    y_v = data[data.columns[1]]
+    dt = x_t[x_t.size-1]-x_t[0]
     
-    return integrate.trapz(var_yv, var_x)/dt
+    return integrate.trapz(y_v, x_t)/dt
 
 start_time = time.now()
 
